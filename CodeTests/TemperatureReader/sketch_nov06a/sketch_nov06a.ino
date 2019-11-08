@@ -9,7 +9,8 @@ void loop() {
   float degreesC = (voltage - 0.5) * 100.0;
   float farenheit = (degreesC * 9.0/5.0) + 32;
 
-  Serial.print("Farenheit:");
+  Serial.print((float) millis()/1000.0f);
+  Serial.print(',');
   Serial.println(farenheit);
   
 
