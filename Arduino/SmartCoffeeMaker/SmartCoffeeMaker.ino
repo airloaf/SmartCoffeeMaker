@@ -1,11 +1,35 @@
-#define WITH_LCD 0
+#include "View.h"
+#include "Model.h"
 
-#include "ClickEncoder.h"
+//#include "ClickEncoder.h"
 #include <TimerOne.h>
 #include <LiquidCrystal_I2C.h>
 
-#define COFFEE_PIN 8
+// Model to hold the current state
+Model *model;
 
+// View for the smart coffee maker
+View *view;
+
+void setup(){
+  model = new Model();
+  view = new View();
+  model->addObserver(view);
+
+  view->setModel(model);
+
+  view->onNotify();
+  
+}
+
+void loop(){
+  model->setIsBrewing(true);
+  delay(1000);
+  model->setIsBrewing(false);
+  delay(1000);
+}
+
+/*
 // Create LCD display
 LiquidCrystal_I2C lcd(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
@@ -101,3 +125,4 @@ void loop() {
     }
   }
 }
+*/
