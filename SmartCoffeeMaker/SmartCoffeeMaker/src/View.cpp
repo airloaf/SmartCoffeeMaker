@@ -14,10 +14,10 @@ void View::setModel(Model *modelReference){
 }
 
 void View::onNotify(){
+
   lcd->setCursor(0, 0);
-  if(model->getIsBrewing()){
-    lcd->print("Is Brewing");
-  }else{
-    lcd->print("Not Brewing");
-  }
+  lcd->clear();
+  const char *displayText = model->getDisplayText();
+  lcd->print(displayText);
+
 }
