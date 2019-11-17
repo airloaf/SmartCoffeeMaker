@@ -5,14 +5,17 @@
 #include <TimerOne.h>
 
 #include "Model.h"
-#include "MenuController.h"
 
 class UserInput {
     private:
         int16_t last, value;
 
         Model *model;
-        MenuController *menuController;
+
+        void handleCWTurn();
+        void handleCCWTurn();
+        void handleClick();
+        void handleDoubleClick();
 
     public:
         UserInput();
@@ -22,7 +25,5 @@ class UserInput {
 
         // Set the model reference
         void setModel(Model *modelReference);
-
-        void setMenuController(MenuController *controller);
 
 };

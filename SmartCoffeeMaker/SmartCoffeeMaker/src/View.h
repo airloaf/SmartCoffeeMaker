@@ -12,6 +12,8 @@ class View: public Observer{
 
     Model *model;
 
+    char *previousTopDisplayText;
+
   public:
     View();
 

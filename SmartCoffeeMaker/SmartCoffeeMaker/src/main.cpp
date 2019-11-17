@@ -3,22 +3,21 @@
 #include "View.h"
 #include "Model.h"
 #include "UserInput.h"
-#include "MenuController.h"
 #include "Relay.h"
 #include "WaterSensor.h"
+#include "PotSensor.h"
 
 #include <ClickEncoder.h>
 #include <TimerOne.h>
 #include <Wire.h>
+#include <Tone.h>
+
 
 // Model to hold the current state
 Model *model;
 
 // View for the smart coffee maker
 View *view;
-
-// Menu controller
-MenuController *menuController;
 
 // User Input
 UserInput *userInput;
@@ -29,44 +28,45 @@ Relay *relay;
 // Water Water
 WaterSensor *waterSensor;
 
+// Pot Sensor
+PotSensor *potSensor;
+
 void setup(){
   Serial.begin(9600);
-  
+
   model = new Model();
   view = new View();
   userInput = new UserInput();
   waterSensor = new WaterSensor();
-
-  menuController->setModel(model);
-  model->addObserver(view);
+  relay = new Relay();
+  potSensor = new PotSensor();
 
   view->setModel(model);
   userInput->setModel(model);
-
-  menuController = new MenuController();
-  menuController->setModel(model);
-  userInput->setMenuController(menuController);
-  menuController->displayText();
-
-  relay = new Relay();
   relay->setModel(model);
-
   waterSensor->setModel(model);
+  potSensor->setModel(model);
 
+  model->addObserver(view);
   model->addObserver(relay);
 
-  //model->setView(view);
-  //model->setRelay(relay);
-
   view->onNotify();
-  
 }
 
 void loop(){
   userInput->loop();
   waterSensor->updateSensor();
+  potSensor->updateSensor();
+  /*
+  bool cardPresent = false;
+  mfrc522.PICC_ReadCardSerial();
+  mfrc522.PICC_IsNewCardPresent();
+  if(! mfrc522.PICC_ReadCardSerial()){
+    cardPresent = false;
+  }else{
+    cardPresent = true;
+  }
 
-  int reading = analogRead(A3);
-  Serial.println(reading);
-
+  Serial.print(cardPresent);
+  */
 }

@@ -6,6 +6,8 @@ View::View(){
   lcd->setCursor(0, 0);
   lcd->blink();
   lcd->clear();
+
+  previousTopDisplayText = nullptr;
 }
 
 void View::setModel(Model *modelReference){
@@ -15,9 +17,14 @@ void View::setModel(Model *modelReference){
 
 void View::onNotify(){
 
-  lcd->setCursor(0, 0);
-  lcd->clear();
   const char *displayText = model->getDisplayText();
-  lcd->print(displayText);
+
+  if(previousTopDisplayText != displayText){
+    lcd->setCursor(0, 0);
+    lcd->clear();
+    lcd->print(displayText);
+    previousTopDisplayText = displayText;
+  }
+
 
 }

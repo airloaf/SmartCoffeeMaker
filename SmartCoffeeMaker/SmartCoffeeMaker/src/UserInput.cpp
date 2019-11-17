@@ -27,10 +27,6 @@ void UserInput::setModel(Model *modelReference){
   model = modelReference;
 }
 
-void UserInput::setMenuController(MenuController *controller){
-  menuController = controller;
-}
-
 void UserInput::loop(){
 
   // Get the encoder value
@@ -40,13 +36,13 @@ void UserInput::loop(){
     if (value >= 4){
       value = 0;
       model->setInputState(InputState::CLOCK_WISE_TURN);
-      menuController->cwTurn();
+      handleCWTurn();
       Serial.println("Clock Wise");
     }else if(value <= -4){
       value = 0;
       model->setInputState(InputState::COUNTER_CLOCK_WISE_TURN);
-      menuController->ccwTurn();
       Serial.println("Counter Clock Wise");
+      handleCCWTurn();
     }
   }
 
@@ -59,14 +55,50 @@ void UserInput::loop(){
       VERBOSECASE(ClickEncoder::Released)
       case ClickEncoder::Clicked:
           model->setInputState(InputState::SINGLE_CLICK);
-          menuController->singleClickPress();
           Serial.println("Click");
+          handleClick();
+
       break;
       case ClickEncoder::DoubleClicked:
           model->setInputState(InputState::DOUBLE_CLICK);
-          menuController->doubleClickPress();
           Serial.println("Double Click");
+          handleClick();
         break;
     }
+  }
+}
+
+void UserInput::handleCWTurn(){
+      if(model->getInterfaceState() == InterfaceState::MENU){
+        model->setMenuState((model->getMenuState() + 1) % MenuState::MENU_SELECTIONS);
+      }
+}
+
+void UserInput::handleCCWTurn(){
+  if(model->getInterfaceState() == InterfaceState::MENU){
+    model->setMenuState((model->getMenuState() - 1) % MenuState::MENU_SELECTIONS);
+  }
+}
+
+void UserInput::handleClick(){
+  InterfaceState currentInterfaceState = model->getInterfaceState();
+
+  if(currentInterfaceState == InterfaceState::MENU){
+    MenuState currentMenuState = model->getMenuState();
+
+    // Turn on the brewing
+    if(currentMenuState == MenuState::MENU_BREW){
+      //model->setInterfaceState(InterfaceState::BREW);
+      model->setBrewRequested(true);
+    }
+  }
+
+}
+
+void UserInput::handleDoubleClick(){
+  InterfaceState currentInterfaceState = model->getInterfaceState();
+
+  if(currentInterfaceState != InterfaceState::MENU){
+    model->setInterfaceState(InterfaceState::MENU);
   }
 }
