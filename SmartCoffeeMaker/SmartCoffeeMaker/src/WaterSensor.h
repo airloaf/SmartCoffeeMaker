@@ -1,6 +1,6 @@
 #pragma once
 
-#define NUM_READINGS 5
+#define NUM_READINGS 10000
 
 #include "Model.h"
 
@@ -13,8 +13,8 @@ class WaterSensor{
         void setModel(Model *model);
 
     private:
-        int sensorReadings[NUM_READINGS];
-        int numReadings;
+        long numReadings;
+        long sumReadings;
 
         Model *model;
 

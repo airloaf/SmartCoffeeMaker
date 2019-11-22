@@ -21,6 +21,8 @@ Model::Model(){
   // Set initial text to empty
   displayText = nullptr;
 
+  alarmToggle = false;
+
   interfaceState = InterfaceState::MENU;
   menuState = MenuState::MENU_BREW;
   brewState = BrewState::BREWING;
@@ -58,7 +60,13 @@ void Model::updateDisplayText(){
     displayText = SETTINGS_STRINGS[settingsState];
   }else if(interfaceState == InterfaceState::BREW){
     displayText = SCHEDULING_STRINGS[schedulingState];
+  }else if(interfaceState == InterfaceState::ERRORS){
+    displayText = ERROR_STRINGS[errorState];
   }
+}
+
+bool Model::getAlarmToggle(){
+  return alarmToggle;
 }
 
 InterfaceState Model::getInterfaceState(){
@@ -78,6 +86,10 @@ SettingsState Model::getSettingsState(){
 
 SchedulingState Model::getSchedulingState(){
   return schedulingState;
+}
+
+ErrorState Model::getErrorState(){
+  return errorState;
 }
 
 void Model::notifyObservers(){
@@ -139,6 +151,10 @@ void Model::setBrewRequested(bool request){
   //notifyObservers();
 }
 
+void Model::setAlarmToggle(bool alarm){
+  alarmToggle = alarm;
+}
+
 void Model::setView(Observer *viewReference){
   view = viewReference;
 }
@@ -173,6 +189,12 @@ void Model::setSettingsState(SettingsState settingsState){
 
 void Model::setSchedulingState(SchedulingState schedulingState){
   this->schedulingState = schedulingState;
+  updateDisplayText();
+  notifyObservers();
+}
+
+void Model::setErrorState(ErrorState errorState){
+  this->errorState = errorState;
   updateDisplayText();
   notifyObservers();
 }

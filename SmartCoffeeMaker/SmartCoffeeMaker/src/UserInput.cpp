@@ -71,12 +71,16 @@ void UserInput::loop(){
 void UserInput::handleCWTurn(){
       if(model->getInterfaceState() == InterfaceState::MENU){
         model->setMenuState((model->getMenuState() + 1) % MenuState::MENU_SELECTIONS);
+      }else if(model->getInterfaceState() == InterfaceState::ERRORS){
+        model->setInterfaceState(InterfaceState::MENU);
       }
 }
 
 void UserInput::handleCCWTurn(){
   if(model->getInterfaceState() == InterfaceState::MENU){
     model->setMenuState((model->getMenuState() - 1) % MenuState::MENU_SELECTIONS);
+  }else if(model->getInterfaceState() == InterfaceState::ERRORS){
+    model->setInterfaceState(InterfaceState::MENU);
   }
 }
 
@@ -91,6 +95,8 @@ void UserInput::handleClick(){
       //model->setInterfaceState(InterfaceState::BREW);
       model->setBrewRequested(true);
     }
+  }else if(currentInterfaceState == InterfaceState::ERRORS){
+    model->setInterfaceState(InterfaceState::MENU);
   }
 
 }
@@ -99,6 +105,8 @@ void UserInput::handleDoubleClick(){
   InterfaceState currentInterfaceState = model->getInterfaceState();
 
   if(currentInterfaceState != InterfaceState::MENU){
+    model->setInterfaceState(InterfaceState::MENU);
+  }else if(currentInterfaceState == InterfaceState::ERRORS){
     model->setInterfaceState(InterfaceState::MENU);
   }
 }

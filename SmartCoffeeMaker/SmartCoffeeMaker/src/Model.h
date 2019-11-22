@@ -17,7 +17,8 @@ enum InterfaceState {
   BREW = 1,
   SETTING = 2,
   SCHEDULE = 3,
-  INTERFACE_SELECTIONS = 4
+  ERRORS = 4,
+  INTERFACE_SELECTIONS = 5
 };
 
 enum MenuState {
@@ -42,6 +43,13 @@ enum SchedulingState{
   SCHEDULING_SELECTIONS = 1
 };
 
+enum ErrorState {
+  LOW_WATER = 0,
+  NO_COFFEE_POT = 1,
+  FINISHED_BREWING = 2,
+  ERROR_SELECTIONS = 3
+};
+
 class Model{
   private:
 
@@ -50,6 +58,7 @@ class Model{
     BrewState brewState;
     SettingsState settingsState;
     SchedulingState schedulingState;
+    ErrorState errorState;
     
     // The observers for the model
     Observer *observers[NUM_OBSERVERS];
@@ -68,6 +77,7 @@ class Model{
     bool waterLevelLow;
     bool potPresent;
     bool brewRequested;
+    bool alarmToggle;
 
     // Notify the observers of the changes to the model
     void notifyObservers();
@@ -93,6 +103,12 @@ class Model{
 
     char *SCHEDULING_STRINGS[SchedulingState::SCHEDULING_SELECTIONS] = {SCHEDULING_SCHEDULE_STRING};
 
+    char *ERROR_LOW_WATER = "LOW ON WATER";
+    char *ERROR_NO_COFFEE_POT = "NO COFFEE POT";
+    char *ERROR_FINISHED_BREWING = "FINISHED BREW";
+
+    char *ERROR_STRINGS[ErrorState::ERROR_SELECTIONS] = {ERROR_LOW_WATER, ERROR_NO_COFFEE_POT, ERROR_FINISHED_BREWING};
+
   public:
     Model();
 
@@ -111,12 +127,14 @@ class Model{
     bool getWaterLevelLow();
     bool isPotPresent();
     bool isBrewRequested();
+    bool getAlarmToggle();
 
     InterfaceState getInterfaceState();
     MenuState getMenuState();
     BrewState getBrewState();
     SettingsState getSettingsState();
     SchedulingState getSchedulingState();
+    ErrorState getErrorState();
 
     // Setters
     void setIsBrewing(bool brewing);
@@ -125,12 +143,14 @@ class Model{
     void setWaterLevelLow(bool level);
     void setPotPresent(bool present);
     void setBrewRequested(bool request);
+    void setAlarmToggle(bool alarm);
 
     void setInterfaceState(InterfaceState interfaceState);
     void setMenuState(MenuState menuState);
     void setBrewState(BrewState brewState);
     void setSettingsState(SettingsState settingsState);
     void setSchedulingState(SchedulingState schedulingState);
+    void setErrorState(ErrorState errorState);
 
     void setView(Observer *viewReference);
     void setRelay(Observer *relayReference);

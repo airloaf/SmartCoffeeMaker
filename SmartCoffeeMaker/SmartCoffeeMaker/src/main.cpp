@@ -6,6 +6,7 @@
 #include "Relay.h"
 #include "WaterSensor.h"
 #include "PotSensor.h"
+#include "Alarm.h"
 
 #include <ClickEncoder.h>
 #include <TimerOne.h>
@@ -31,6 +32,9 @@ WaterSensor *waterSensor;
 // Pot Sensor
 PotSensor *potSensor;
 
+// Alarm
+Alarm *alarm;
+
 void setup(){
   Serial.begin(9600);
 
@@ -40,12 +44,14 @@ void setup(){
   waterSensor = new WaterSensor();
   relay = new Relay();
   potSensor = new PotSensor();
+  alarm = new Alarm();
 
   view->setModel(model);
   userInput->setModel(model);
   relay->setModel(model);
   waterSensor->setModel(model);
   potSensor->setModel(model);
+  alarm->setModel(model);
 
   model->addObserver(view);
   model->addObserver(relay);
@@ -57,6 +63,7 @@ void loop(){
   userInput->loop();
   waterSensor->updateSensor();
   potSensor->updateSensor();
+  alarm->update();
   /*
   bool cardPresent = false;
   mfrc522.PICC_ReadCardSerial();

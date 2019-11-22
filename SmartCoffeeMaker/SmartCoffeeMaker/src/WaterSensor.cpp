@@ -8,11 +8,12 @@
 WaterSensor::WaterSensor(){
     numReadings = 0;
     model = nullptr;
+    sumReadings = 0;
 }
 
 void WaterSensor::updateSensor(){
 
-    sensorReadings[numReadings] = analogRead(WATER_SENSOR_PIN);
+    sumReadings += analogRead(WATER_SENSOR_PIN);
     numReadings++;
 
     // Check if the number of readings exceeds the
@@ -20,18 +21,18 @@ void WaterSensor::updateSensor(){
     if(numReadings == NUM_READINGS){
         numReadings = 0;
 
-        bool waterLevelLow = true;
+        Serial.println(sumReadings);
+        long expected = ((long) NUM_READINGS) * (long) 1023;
+        Serial.println(expected);
+        Serial.println(analogRead(WATER_SENSOR_PIN));
 
-        for(int readingIndex = 0; readingIndex < NUM_READINGS; readingIndex++){
-            if(sensorReadings[readingIndex] < READING_THRESHOLD){
-                waterLevelLow = false;
-            }
-        }
-
+        bool waterLevelLow = (sumReadings >= (expected-NUM_READINGS*2));
 
         if(model != nullptr){
             model->setWaterLevelLow(waterLevelLow);
         }
+
+        sumReadings = 0;
     }
 
 }
